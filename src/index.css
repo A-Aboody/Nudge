@@ -1,0 +1,136 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* {
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+::selection {
+  background-color: rgba(105, 117, 101, 0.3);
+  color: inherit;
+}
+
+html {
+  scroll-behavior: smooth;
+  touch-action: manipulation;
+}
+
+/* Thin scrollbar styling (Notion-like) */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.15);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.25);
+}
+
+.chakra-ui-dark ::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.chakra-ui-dark ::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+}
+
+body {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
+}
+
+/* Drag handle visibility */
+.widget-drag-handle {
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  cursor: grab;
+}
+
+.widget-drag-handle:active {
+  cursor: grabbing;
+}
+
+.widget-card:hover .widget-drag-handle {
+  opacity: 0.4;
+}
+
+.widget-card:hover .widget-drag-handle:hover {
+  opacity: 0.7;
+}
+
+/* On touch devices, always show drag handle */
+@media (pointer: coarse) {
+  .widget-drag-handle {
+    opacity: 0.3;
+  }
+}
+
+/* Widget grid layout */
+.widget-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.widget-grid > * {
+  min-width: 0;
+}
+
+@media (min-width: 1024px) {
+  .widget-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+/* Note editor styles */
+.note-editor-content {
+  outline: none !important;
+  line-height: 1.75 !important;
+  letter-spacing: -0.01em;
+  font-feature-settings: 'liga' 1, 'kern' 1;
+  cursor: text;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+.note-editor-content:focus {
+  outline: none !important;
+}
+
+.note-editor-content ul,
+.note-editor-content ol {
+  padding-left: 1.5em;
+  margin: 0.5em 0;
+}
+
+.note-editor-content li {
+  margin: 0.25em 0;
+}
+
+/* Task drag handle visibility */
+.task-drag-handle {
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  cursor: grab;
+}
+
+.task-drag-handle:active {
+  cursor: grabbing;
+}
+
+.task-item:hover .task-drag-handle {
+  opacity: 0.4;
+}
+
+.task-item:hover .task-drag-handle:hover {
+  opacity: 0.7;
+}
