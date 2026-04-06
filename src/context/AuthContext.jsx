@@ -8,6 +8,8 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { auth, googleProvider } from "../lib/firebase";
+import { loadTodos } from "../services/db";
+import { updateAppBadge } from "../services/notifications";
 
 const AuthContext = createContext(null);
 
@@ -19,6 +21,15 @@ export function AuthProvider({ children }) {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       setUser(firebaseUser);
       setLoading(false);
+
+      // Set app badge on login
+      if (firebaseUser) {
+        loadTodos(firebaseUser.uid).then((todos) => {
+          updateAppBadge(todos.filter((t) => !t.completed).length);
+        });
+      } else {
+        updateAppBadge(0);
+      }
     });
     return unsubscribe;
   }, []);

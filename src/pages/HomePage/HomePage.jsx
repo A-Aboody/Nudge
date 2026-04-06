@@ -23,7 +23,7 @@ import {
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { Reorder, useDragControls } from "framer-motion";
-import { scheduleAllReminders, clearAllScheduledReminders } from "../../services/notifications";
+import { scheduleAllReminders, clearAllScheduledReminders, updateAppBadge } from "../../services/notifications";
 import SpotifyWidget from "../../custom_components/SpotifyWidget/SpotifyWidget";
 import { useAuth } from "../../context/AuthContext";
 import {
@@ -666,12 +666,7 @@ const HomePage = () => {
   const pendingCount = useMemo(() => allTodos.filter((t) => !t.completed).length, [allTodos]);
 
   useEffect(() => {
-    if (!("setAppBadge" in navigator)) return;
-    if (pendingCount > 0) {
-      navigator.setAppBadge(pendingCount);
-    } else {
-      navigator.clearAppBadge();
-    }
+    updateAppBadge(pendingCount);
   }, [pendingCount]);
 
   const totalEvents = useMemo(() => {

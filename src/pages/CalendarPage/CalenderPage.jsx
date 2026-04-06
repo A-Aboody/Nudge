@@ -545,6 +545,31 @@ const CalendarPage = () => {
   useEffect(() => {
     if (!user) return;
     Promise.all([dbLoadEvents(user.uid), dbLoadCategories(user.uid, "calendar"), dbLoadTodosForCal(user.uid)]).then(([e, c, t]) => {
+      // Seed Nadine's Birthday if not present
+      const hasBirthday = e.some((ev) => ev._seedId === "nadines-birthday");
+      if (!hasBirthday) {
+        const now = new Date().toISOString();
+        const birthdayEvent = {
+          id: Date.now() + 1,
+          _seedId: "nadines-birthday",
+          title: "Nadine's Birthday!!",
+          description: "",
+          date: "2026-11-16",
+          startTime: "",
+          endTime: "",
+          allDay: true,
+          category: "Personal",
+          color: "purple",
+          recurring: "yearly",
+          location: "",
+          linkedTodoId: null,
+          linkedNoteId: null,
+          createdAt: now,
+          updatedAt: now,
+        };
+        e = [...e, birthdayEvent];
+        dbSaveEvents(user.uid, e);
+      }
       setEvents(e);
       setStoredCategories(c);
       setCalTodos(t);
@@ -887,7 +912,7 @@ const CalendarPage = () => {
                       _hover={{ bg: isToday ? "primary.subtle" : "bg.hover" }}
                       transition="background 0.1s"
                       overflow="hidden"
-                      onClick={() => handleStartCreate(cell.dateStr)}
+                      onClick={() => { setViewDate(new Date(cell.dateStr + "T00:00:00")); setViewMode("day"); }}
                     >
                       <Flex justify="center" mb={0.5} flexShrink={0}>
                         <Flex w="22px" h="22px" borderRadius="full" align="center" justify="center" bg={isToday ? "primary" : "transparent"}>
@@ -1154,8 +1179,9 @@ const CalendarPage = () => {
           borderRadius={{ base: "0", md: "12px" }} mx={{ base: 0, md: 4 }}
           maxH={{ base: "100%", md: "85vh" }} minH={{ base: "100%", md: "auto" }}
           my={{ base: 0, md: "60px" }} bg="background"
+          pt={{ base: "env(safe-area-inset-top)", md: 0 }}
         >
-          <ModalCloseButton color="text.tertiary" zIndex={2} />
+          <ModalCloseButton color="text.tertiary" zIndex={2} top={{ base: "calc(env(safe-area-inset-top) + 8px)", md: "8px" }} />
           <ModalBody pt={6} pb={8} px={{ base: 5, md: 8 }}>
             {modalEvent && (
               <>

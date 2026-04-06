@@ -50,6 +50,7 @@ import { Reorder } from "framer-motion";
 import { createEventFromTodo } from "../../utils/linkHelpers";
 import { useAuth } from "../../context/AuthContext";
 import { loadTodos as dbLoadTodos, saveTodos as dbSaveTodos, loadCategories as dbLoadCategories, saveCategories as dbSaveCategories } from "../../services/db";
+import { updateAppBadge } from "../../services/notifications";
 
 // --- Constants ---
 
@@ -199,7 +200,10 @@ const ToDoPage = () => {
   useEffect(() => {
     if (!user || !initialLoadDone.current) return;
     if (storageSaveTimer.current) clearTimeout(storageSaveTimer.current);
-    storageSaveTimer.current = setTimeout(() => dbSaveTodos(user.uid, todos), 500);
+    storageSaveTimer.current = setTimeout(() => {
+      dbSaveTodos(user.uid, todos);
+      updateAppBadge(todos.filter((t) => !t.completed).length);
+    }, 500);
     return () => {
       if (storageSaveTimer.current) clearTimeout(storageSaveTimer.current);
     };
@@ -814,8 +818,9 @@ const ToDoPage = () => {
           minH={{ base: "100%", md: "auto" }}
           my={{ base: 0, md: "60px" }}
           bg="background"
+          pt={{ base: "env(safe-area-inset-top)", md: 0 }}
         >
-          <ModalCloseButton color="text.tertiary" zIndex={2} />
+          <ModalCloseButton color="text.tertiary" zIndex={2} top={{ base: "calc(env(safe-area-inset-top) + 8px)", md: "8px" }} />
           <ModalBody pt={6} pb={8} px={{ base: 5, md: 8 }}>
             {activeTask && (
               <>
