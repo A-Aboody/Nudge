@@ -66,7 +66,7 @@ const SpotifyMiniPlayer = () => {
   return (
     <Box
       position="fixed"
-      bottom={isMobile ? "52px" : "0"}
+      bottom={isMobile ? "calc(52px + env(safe-area-inset-bottom))" : "0"}
       left={isMobile ? "0" : "220px"}
       right="0"
       bg="bg.elevated"
