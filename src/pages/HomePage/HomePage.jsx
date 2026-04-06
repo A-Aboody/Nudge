@@ -135,7 +135,7 @@ const EventsWidget = ({ allEvents, dragControls }) => {
   const events = useMemo(() => {
     const today = new Date().toISOString().split("T")[0];
     return allEvents
-      .filter((e) => e.date >= today)
+      .filter((e) => e.date >= today && !e.isHoliday)
       .sort((a, b) => a.date.localeCompare(b.date) || (a.startTime || "").localeCompare(b.startTime || ""))
       .slice(0, 4);
   }, [allEvents]);
@@ -671,7 +671,7 @@ const HomePage = () => {
 
   const totalEvents = useMemo(() => {
     const today = new Date().toISOString().split("T")[0];
-    return allEvents.filter((e) => e.date >= today).length;
+    return allEvents.filter((e) => e.date >= today && !e.isHoliday).length;
   }, [allEvents]);
 
   const stats = [

@@ -1,0 +1,18 @@
+[
+  {
+    "_seedId": "unique-id-for-this-event",
+    "title": "Example Birthday",
+    "description": "",
+    "date": "2026-01-01",
+    "startTime": "",
+    "endTime": "",
+    "allDay": true,
+    "isHoliday": true,
+    "category": "Personal",
+    "color": "purple",
+    "recurring": "yearly",
+    "location": "",
+    "linkedTodoId": null,
+    "linkedNoteId": null
+  }
+]

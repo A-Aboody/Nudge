@@ -1,5 +1,6 @@
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../lib/firebase";
+import seededEvents from "../data/seededEvents.json";
 
 // ── helpers ──────────────────────────────────────────────
 
@@ -68,6 +69,36 @@ export async function loadSettings(uid) {
 
 export async function saveSettings(uid, settings) {
   await writeObj(uid, "settings", settings);
+}
+
+// ── Seeded events (holidays, birthdays, etc.) ────────────
+
+export async function applySeedEvents(uid, events) {
+  const now = new Date().toISOString();
+  let updated = [...events];
+  let dirty = false;
+
+  for (const seed of seededEvents) {
+    const idx = updated.findIndex((ev) => ev._seedId === seed._seedId);
+    if (idx === -1) {
+      updated.push({ id: Date.now() + Math.random(), ...seed, createdAt: now, updatedAt: now });
+      dirty = true;
+    } else {
+      // Migrate any missing fields from the seed definition
+      const existing = updated[idx];
+      const patch = {};
+      for (const key of Object.keys(seed)) {
+        if (existing[key] === undefined) patch[key] = seed[key];
+      }
+      if (Object.keys(patch).length > 0) {
+        updated[idx] = { ...existing, ...patch };
+        dirty = true;
+      }
+    }
+  }
+
+  if (dirty) await saveEvents(uid, updated);
+  return updated;
 }
 
 // ── One-time migration from localStorage → Firestore ────

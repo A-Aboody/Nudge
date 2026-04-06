@@ -17,6 +17,9 @@ dist-ssr
 .env.local
 .env.production
 
+# Personal seeded events (contains private names/dates — copy from seededEvents.example.json)
+src/data/seededEvents.json
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

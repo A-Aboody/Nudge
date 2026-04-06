@@ -57,7 +57,7 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { createTodoFromEvent } from "../../utils/linkHelpers";
 import { loadTodos as dbLoadTodosForCal } from "../../services/db";
 import { useAuth } from "../../context/AuthContext";
-import { loadEvents as dbLoadEvents, saveEvents as dbSaveEvents, loadCategories as dbLoadCategories, saveCategories as dbSaveCategories } from "../../services/db";
+import { loadEvents as dbLoadEvents, saveEvents as dbSaveEvents, loadCategories as dbLoadCategories, saveCategories as dbSaveCategories, applySeedEvents } from "../../services/db";
 
 // --- Constants ---
 const HOUR_HEIGHT = 48;
@@ -544,32 +544,8 @@ const CalendarPage = () => {
   // Load from Firestore on mount
   useEffect(() => {
     if (!user) return;
-    Promise.all([dbLoadEvents(user.uid), dbLoadCategories(user.uid, "calendar"), dbLoadTodosForCal(user.uid)]).then(([e, c, t]) => {
-      // Seed Nadine's Birthday if not present
-      const hasBirthday = e.some((ev) => ev._seedId === "nadines-birthday");
-      if (!hasBirthday) {
-        const now = new Date().toISOString();
-        const birthdayEvent = {
-          id: Date.now() + 1,
-          _seedId: "nadines-birthday",
-          title: "Nadine's Birthday!!",
-          description: "",
-          date: "2026-11-16",
-          startTime: "",
-          endTime: "",
-          allDay: true,
-          category: "Personal",
-          color: "purple",
-          recurring: "yearly",
-          location: "",
-          linkedTodoId: null,
-          linkedNoteId: null,
-          createdAt: now,
-          updatedAt: now,
-        };
-        e = [...e, birthdayEvent];
-        dbSaveEvents(user.uid, e);
-      }
+    Promise.all([dbLoadEvents(user.uid), dbLoadCategories(user.uid, "calendar"), dbLoadTodosForCal(user.uid)]).then(async ([e, c, t]) => {
+      e = await applySeedEvents(user.uid, e);
       setEvents(e);
       setStoredCategories(c);
       setCalTodos(t);
@@ -1210,6 +1186,11 @@ const CalendarPage = () => {
                   <Flex align="center" gap={3}>
                     <HStack spacing={1.5} w="90px" flexShrink={0}><Icon as={FiClock} boxSize="13px" color="text.tertiary" /><Text fontSize="xs" color="text.tertiary" fontWeight="500">All Day</Text></HStack>
                     <Switch size="sm" isChecked={modalEvent.allDay} onChange={(e) => handleFieldChange("allDay", e.target.checked)} colorScheme="green" />
+                  </Flex>
+                  {/* Holiday */}
+                  <Flex align="center" gap={3}>
+                    <HStack spacing={1.5} w="90px" flexShrink={0}><Icon as={FiRepeat} boxSize="13px" color="text.tertiary" /><Text fontSize="xs" color="text.tertiary" fontWeight="500">Holiday</Text></HStack>
+                    <Switch size="sm" isChecked={!!modalEvent.isHoliday} onChange={(e) => handleFieldChange("isHoliday", e.target.checked)} colorScheme="green" />
                   </Flex>
                   {/* Time inputs */}
                   {!modalEvent.allDay && (
