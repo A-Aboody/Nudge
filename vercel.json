@@ -1,4 +1,5 @@
 {
+  "buildCommand": "echo '[]' > src/data/seededEvents.json && npm run build",
   "rewrites": [
     { "source": "/(.*)", "destination": "/" }
   ]

@@ -1,4 +1,5 @@
 import { Route, Routes, Navigate } from 'react-router-dom';
+import NadinePage from './pages/NadinePage/NadinePage'; // TEMPORARY
 import HomePage from './pages/HomePage/HomePage';
 import SettingsPage from './pages/SettingsPage/SettingsPage';
 import NotesPage from './pages/NotesPage/NotesPage';
@@ -12,6 +13,10 @@ import { NavbarProvider } from './context/NavbarContext';
 import { SpotifyProvider } from './context/SpotifyContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { Flex, Spinner } from '@chakra-ui/react';
+
+// ── TEMPORARY: set to false to restore normal app ────────────────────────────
+const NADINE_MODE = true;
+// ─────────────────────────────────────────────────────────────────────────────
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -74,6 +79,7 @@ function AppRoutes() {
 }
 
 function App() {
+  if (NADINE_MODE) return <NadinePage />;
   return (
     <AuthProvider>
       <AppRoutes />
